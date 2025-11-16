@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/yourorg/invoice-backend/proto/user;user";
+
+// ========================
+// USER SERVICE
+// ========================
+service UserService {
+  rpc RegisterUser(RegisterUserRequest) returns (UserResponse);
+  rpc LogIn(LogInRequest) returns (LogInResponse);
+  rpc LogOut(LogOutRequest) returns (LogOutResponse);
+  rpc GetUserInfo(GetUserInfoRequest) returns (UserResponse);
+}
+
+message RegisterUserRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LogInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LogInResponse {
+  string jwt = 1;
+  string refresh_token = 2;
+  string message = 3;
+}
+
+message LogOutRequest {
+  string jwt = 1;
+}
+
+message LogOutResponse {
+  string message = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string email = 2;
+  string message = 3;
+}
+message GetUserInfoRequest {
+  string id = 1;
+}

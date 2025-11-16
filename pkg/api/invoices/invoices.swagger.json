@@ -1,0 +1,122 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "invoices.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "InvoiceService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "invoicesInvoiceInfo": {
+      "type": "object",
+      "properties": {
+        "invoiceId": {
+          "type": "string"
+        },
+        "senderId": {
+          "type": "string"
+        },
+        "recipientId": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/invoicesInvoiceItem"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "invoicesInvoiceItem": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number",
+          "format": "double"
+        },
+        "referenceId": {
+          "type": "string"
+        }
+      }
+    },
+    "invoicesInvoiceResponse": {
+      "type": "object",
+      "properties": {
+        "invoiceId": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "invoicesListInvoicesResponse": {
+      "type": "object",
+      "properties": {
+        "invoices": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/invoicesInvoiceInfo"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
