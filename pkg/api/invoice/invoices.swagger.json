@@ -17,7 +17,7 @@
   ],
   "paths": {},
   "definitions": {
-    "invoicesInvoiceInfo": {
+    "invoiceInvoiceInfo": {
       "type": "object",
       "properties": {
         "invoiceId": {
@@ -33,11 +33,11 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/invoicesInvoiceItem"
+            "$ref": "#/definitions/invoiceInvoiceItem"
           }
         },
         "status": {
-          "$ref": "#/definitions/invoicesInvoiceStatus"
+          "$ref": "#/definitions/invoiceInvoiceStatus"
         },
         "description": {
           "type": "string"
@@ -52,7 +52,7 @@
         }
       }
     },
-    "invoicesInvoiceItem": {
+    "invoiceInvoiceItem": {
       "type": "object",
       "properties": {
         "title": {
@@ -68,7 +68,7 @@
         }
       }
     },
-    "invoicesInvoiceResponse": {
+    "invoiceInvoiceResponse": {
       "type": "object",
       "properties": {
         "invoiceId": {
@@ -79,7 +79,7 @@
         }
       }
     },
-    "invoicesInvoiceStatus": {
+    "invoiceInvoiceStatus": {
       "type": "string",
       "enum": [
         "pending",
@@ -88,14 +88,14 @@
       ],
       "default": "pending"
     },
-    "invoicesListInvoicesResponse": {
+    "invoiceListInvoicesResponse": {
       "type": "object",
       "properties": {
         "invoices": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/invoicesInvoiceInfo"
+            "$ref": "#/definitions/invoiceInvoiceInfo"
           }
         }
       }

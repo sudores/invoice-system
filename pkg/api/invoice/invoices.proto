@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package invoices;
+package invoice;
 
-option go_package = "github.com/yourorg/invoice-backend/proto/invoice;invoice";
+option go_package = "github.com/sudores/invoice-system/api/invoice;invoice";
 
 import "google/protobuf/timestamp.proto";
 

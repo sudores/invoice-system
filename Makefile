@@ -2,7 +2,7 @@ USER_API_DIR = pkg/api/user
 USER_API_PROTO_SOURCE = $(wildcard ${USER_API_DIR}/*.proto)
 USER_API_PROTO_OUT = ${USER_API_DIR}/api.swagger.json $(wildcard pkg/api/users/*.go)
 
-INVOICES_API_DIR = pkg/api/invoices
+INVOICES_API_DIR = pkg/api/invoice
 INVOICES_API_PROTO_SOURCE = $(wildcard ${INVOICES_API_DIR}/*.proto)
 INVOICES_API_PROTO_OUT = ${INVOICES_API_DIR}/api.swagger.json $(wildcard pkg/api/invoices/*.go)
 

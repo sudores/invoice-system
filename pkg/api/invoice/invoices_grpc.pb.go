@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	InvoiceService_CreateInvoice_FullMethodName        = "/invoices.InvoiceService/CreateInvoice"
-	InvoiceService_UpdateInvoice_FullMethodName        = "/invoices.InvoiceService/UpdateInvoice"
-	InvoiceService_DeleteInvoice_FullMethodName        = "/invoices.InvoiceService/DeleteInvoice"
-	InvoiceService_ListSentInvoices_FullMethodName     = "/invoices.InvoiceService/ListSentInvoices"
-	InvoiceService_ListReceivedInvoices_FullMethodName = "/invoices.InvoiceService/ListReceivedInvoices"
+	InvoiceService_CreateInvoice_FullMethodName        = "/invoice.InvoiceService/CreateInvoice"
+	InvoiceService_UpdateInvoice_FullMethodName        = "/invoice.InvoiceService/UpdateInvoice"
+	InvoiceService_DeleteInvoice_FullMethodName        = "/invoice.InvoiceService/DeleteInvoice"
+	InvoiceService_ListSentInvoices_FullMethodName     = "/invoice.InvoiceService/ListSentInvoices"
+	InvoiceService_ListReceivedInvoices_FullMethodName = "/invoice.InvoiceService/ListReceivedInvoices"
 )
 
 // InvoiceServiceClient is the client API for InvoiceService service.
@@ -228,7 +228,7 @@ func _InvoiceService_ListReceivedInvoices_Handler(srv interface{}, ctx context.C
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var InvoiceService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "invoices.InvoiceService",
+	ServiceName: "invoice.InvoiceService",
 	HandlerType: (*InvoiceServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
