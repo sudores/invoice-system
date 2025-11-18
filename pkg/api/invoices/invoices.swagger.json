@@ -37,7 +37,7 @@
           }
         },
         "status": {
-          "type": "string"
+          "$ref": "#/definitions/invoicesInvoiceStatus"
         },
         "description": {
           "type": "string"
@@ -63,7 +63,8 @@
           "format": "double"
         },
         "referenceId": {
-          "type": "string"
+          "type": "string",
+          "title": "From whom it's issued, arbitrary id"
         }
       }
     },
@@ -77,6 +78,15 @@
           "type": "string"
         }
       }
+    },
+    "invoicesInvoiceStatus": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "refused",
+        "paid"
+      ],
+      "default": "pending"
     },
     "invoicesListInvoicesResponse": {
       "type": "object",

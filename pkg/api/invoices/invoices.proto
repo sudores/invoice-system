@@ -51,7 +51,7 @@ message InvoiceInfo {
   string sender_id = 2;
   string recipient_id = 3;
   repeated InvoiceItem items = 4;
-  string status = 5;
+  InvoiceStatus status = 5;
   string description = 6;
   google.protobuf.Timestamp due_date = 7;
   google.protobuf.Timestamp created_at = 8;
@@ -64,6 +64,11 @@ message ListInvoicesResponse {
 message InvoiceItem {
   string title = 1;
   double amount = 2;
-  string reference_id = 3;
+  string reference_id = 3; // From whom it's issued, arbitrary id
 }
 
+enum InvoiceStatus {
+  pending = 0;
+  refused = 1;
+  paid = 2;
+}
