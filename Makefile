@@ -33,13 +33,13 @@ $(USER_API_PROTO_OUT): $(USER_API_PROTO_SOURCE)
         --openapiv2_opt logtostderr=true \
         $(USER_API_PROTO_SOURCE)
 
-## codegen
+## codegen:
 .PHONY: codegen
-codegen: $(USER_API_PROTO_OUT) $(INVOICES_API_PROTO_OUT)
+codegen: $(USER_API_PROTO_OUT) $(INVOICES_API_PROTO_OUT) ## Generate GRPC stubs
 
-## build
+## build:
 .PHONY: build
-build: codegen
+build: codegen ## Build application and generate grpc stubs
 	go build -o invoice ./cmd/invoice
 
 ## Help:
