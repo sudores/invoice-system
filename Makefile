@@ -6,6 +6,9 @@ INVOICES_API_DIR = pkg/api/invoice
 INVOICES_API_PROTO_SOURCE = $(wildcard ${INVOICES_API_DIR}/*.proto)
 INVOICES_API_PROTO_OUT = ${INVOICES_API_DIR}/api.swagger.json $(wildcard pkg/api/invoices/*.go)
 
+.PHONY: all
+all: help
+
 $(INVOICES_API_PROTO_OUT): $(INVOICES_API_PROTO_SOURCE)
 	protoc -I $(INVOICES_API_DIR) \
 		--go_out=$(INVOICES_API_DIR)  \
@@ -33,6 +36,11 @@ $(USER_API_PROTO_OUT): $(USER_API_PROTO_SOURCE)
 ## codegen
 .PHONY: codegen
 codegen: $(USER_API_PROTO_OUT) $(INVOICES_API_PROTO_OUT)
+
+## build
+.PHONY: build
+build: codegen
+	go build -o invoice ./cmd/invoice
 
 ## Help:
 .PHONY: help
