@@ -10,7 +10,7 @@ INVOICES_API_PROTO_OUT = ${INVOICES_API_DIR}/api.swagger.json $(wildcard pkg/api
 all: help
 
 $(INVOICES_API_PROTO_OUT): $(INVOICES_API_PROTO_SOURCE)
-	protoc -I $(INVOICES_API_DIR) \
+	protoc -I ./proto/googleapis -I $(INVOICES_API_DIR) \
 		--go_out=$(INVOICES_API_DIR)  \
         --go_opt=paths=source_relative \
         --go-grpc_out=$(INVOICES_API_DIR) \
@@ -22,7 +22,7 @@ $(INVOICES_API_PROTO_OUT): $(INVOICES_API_PROTO_SOURCE)
         $(INVOICES_API_PROTO_SOURCE)
 
 $(USER_API_PROTO_OUT): $(USER_API_PROTO_SOURCE)
-	protoc -I $(USER_API_DIR) \
+	protoc -I ./proto/googleapis -I $(USER_API_DIR) \
 		--go_out=$(USER_API_DIR)  \
         --go_opt=paths=source_relative \
         --go-grpc_out=$(USER_API_DIR) \

@@ -4,45 +4,58 @@ package user;
 
 option go_package = "github.com/yourorg/invoice-backend/proto/user;user";
 
+import "google/api/annotations.proto";
+
 // ========================
 // USER SERVICE
 // ========================
 service UserService {
-  rpc RegisterUser(RegisterUserRequest) returns (UserResponse);
-  rpc LogIn(LogInRequest) returns (LogInResponse);
-  rpc LogOut(LogOutRequest) returns (LogOutResponse);
-  rpc GetUserInfo(GetUserInfoRequest) returns (UserResponse);
+  rpc Signup(SignupReq) returns (UserResp) {
+    option (google.api.http) = {
+      get: "/api/v1/signup"
+    };
+  }
+  rpc Login(LoginReq) returns (LoginResp) {
+    option (google.api.http) = {
+      get: "/api/v1/login"
+    };
+  }
+  rpc GetUserInfo(GetUserInfoReq) returns (UserResp) {
+    option (google.api.http) = {
+      get: "/api/v1/getuser"
+    };
+  }
+  rpc GetSelfInfo(GetSelfInfoReq) returns (UserResp) {
+    option (google.api.http) = {
+      get: "/api/v1/self"
+    };
+  }
 }
 
-message RegisterUserRequest {
+message SignupReq {
   string email = 1;
   string password = 2;
 }
 
-message LogInRequest {
+message LoginReq {
   string email = 1;
   string password = 2;
 }
 
-message LogInResponse {
+message LoginResp {
   string jwt = 1;
   string refresh_token = 2;
   string message = 3;
 }
 
-message LogOutRequest {
-  string jwt = 1;
-}
-
-message LogOutResponse {
-  string message = 1;
-}
-
-message UserResponse {
+message UserResp {
   string id = 1;
   string email = 2;
   string message = 3;
 }
-message GetUserInfoRequest {
+
+message GetUserInfoReq {
   string id = 1;
 }
+
+message GetSelfInfoReq {}

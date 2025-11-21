@@ -43,7 +43,7 @@ func NewUsersGrpcService(log *zerolog.Logger, repo UserRepo, jwm *auth.JwtManage
 	}
 }
 
-func (ugs UsersGrpcService) RegisterUser(ctx context.Context, req *RegisterUserRequest) (*UserResponse, error) {
+func (ugs UsersGrpcService) Signup(ctx context.Context, req *SignupReq) (*UserResp, error) {
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	if err != nil {
 		return nil, err
@@ -54,24 +54,24 @@ func (ugs UsersGrpcService) RegisterUser(ctx context.Context, req *RegisterUserR
 		CreatedAt:    time.Now(),
 	})
 	if err != nil {
-		return &UserResponse{
+		return &UserResp{
 			Id:      "",
 			Email:   req.Email,
 			Message: "Failed to register user " + err.Error(),
 		}, err
 	}
-	return &UserResponse{
+	return &UserResp{
 		Id:      created.Id.String(),
 		Email:   req.Email,
 		Message: "User successfully created!",
 	}, nil
 }
 
-func (ugs UsersGrpcService) LogIn(ctx context.Context, req *LogInRequest) (*LogInResponse, error) {
+func (ugs UsersGrpcService) Login(ctx context.Context, req *LoginReq) (*LoginResp, error) {
 	u, err := ugs.repo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		ugs.log.Trace().Str("user_email", req.Email).Msg("Login failed for user. No password found")
-		return &LogInResponse{
+		return &LoginResp{
 			Message: "Failed to get the user in database. Check you email",
 		}, errors.New("Failed to get get the user in database " + err.Error())
 	}
@@ -79,7 +79,7 @@ func (ugs UsersGrpcService) LogIn(ctx context.Context, req *LogInRequest) (*LogI
 	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(req.Password))
 	if err != nil {
 		ugs.log.Trace().Str("user_email", req.Email).Msg("Login failed for user. Password mismatch")
-		return &LogInResponse{
+		return &LoginResp{
 			Message: "Password does not match for user. Please try again",
 		}, errors.New("Password does not match for user: " + err.Error())
 	}
@@ -89,21 +89,22 @@ func (ugs UsersGrpcService) LogIn(ctx context.Context, req *LogInRequest) (*LogI
 	jwtToken, err := ugs.jwm.GenerateJwt(u.Id)
 	if err != nil {
 		ugs.log.Trace().Str("user_email", req.Email).Str("user_id", u.Id.String()).Msg("Login failed. Failed to generate JWT token")
-		return &LogInResponse{
+		return &LoginResp{
 			Message: "Failed to generate JWT token",
 		}, errors.New("Failed to generate JWT token: " + err.Error())
 	}
 
-	return &LogInResponse{
+	return &LoginResp{
 		Jwt:          jwtToken,
 		RefreshToken: "", // TODO: Implement
 		Message:      "Login successful. Good luck!",
 	}, nil
 }
 
-func (ugs UsersGrpcService) LogOut(ctx context.Context, req *LogOutRequest) (*LogOutResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LogOut not implemented")
-}
-func (ugs UsersGrpcService) GetUserInfo(ctx context.Context, req *GetUserInfoRequest) (*UserResponse, error) {
+func (ugs UsersGrpcService) GetUserInfo(ctx context.Context, req *GetUserInfoReq) (*UserResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
+}
+
+func (ugs UsersGrpcService) GetSelfInfo(ctx context.Context, req *GetSelfInfoReq) (*UserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSelfInfo not implemented")
 }

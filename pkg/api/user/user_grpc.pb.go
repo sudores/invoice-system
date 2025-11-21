@@ -19,20 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_RegisterUser_FullMethodName = "/user.UserService/RegisterUser"
-	UserService_LogIn_FullMethodName        = "/user.UserService/LogIn"
-	UserService_LogOut_FullMethodName       = "/user.UserService/LogOut"
-	UserService_GetUserInfo_FullMethodName  = "/user.UserService/GetUserInfo"
+	UserService_Signup_FullMethodName      = "/user.UserService/Signup"
+	UserService_Login_FullMethodName       = "/user.UserService/Login"
+	UserService_GetUserInfo_FullMethodName = "/user.UserService/GetUserInfo"
+	UserService_GetSelfInfo_FullMethodName = "/user.UserService/GetSelfInfo"
 )
 
 // UserServiceClient is the client API for UserService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	LogIn(ctx context.Context, in *LogInRequest, opts ...grpc.CallOption) (*LogInResponse, error)
-	LogOut(ctx context.Context, in *LogOutRequest, opts ...grpc.CallOption) (*LogOutResponse, error)
-	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*UserResponse, error)
+	Signup(ctx context.Context, in *SignupReq, opts ...grpc.CallOption) (*UserResp, error)
+	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*UserResp, error)
+	GetSelfInfo(ctx context.Context, in *GetSelfInfoReq, opts ...grpc.CallOption) (*UserResp, error)
 }
 
 type userServiceClient struct {
@@ -43,36 +43,36 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	out := new(UserResponse)
-	err := c.cc.Invoke(ctx, UserService_RegisterUser_FullMethodName, in, out, opts...)
+func (c *userServiceClient) Signup(ctx context.Context, in *SignupReq, opts ...grpc.CallOption) (*UserResp, error) {
+	out := new(UserResp)
+	err := c.cc.Invoke(ctx, UserService_Signup_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) LogIn(ctx context.Context, in *LogInRequest, opts ...grpc.CallOption) (*LogInResponse, error) {
-	out := new(LogInResponse)
-	err := c.cc.Invoke(ctx, UserService_LogIn_FullMethodName, in, out, opts...)
+func (c *userServiceClient) Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error) {
+	out := new(LoginResp)
+	err := c.cc.Invoke(ctx, UserService_Login_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *userServiceClient) LogOut(ctx context.Context, in *LogOutRequest, opts ...grpc.CallOption) (*LogOutResponse, error) {
-	out := new(LogOutResponse)
-	err := c.cc.Invoke(ctx, UserService_LogOut_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*UserResponse, error) {
-	out := new(UserResponse)
+func (c *userServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*UserResp, error) {
+	out := new(UserResp)
 	err := c.cc.Invoke(ctx, UserService_GetUserInfo_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetSelfInfo(ctx context.Context, in *GetSelfInfoReq, opts ...grpc.CallOption) (*UserResp, error) {
+	out := new(UserResp)
+	err := c.cc.Invoke(ctx, UserService_GetSelfInfo_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,10 +83,10 @@ func (c *userServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoRequ
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	RegisterUser(context.Context, *RegisterUserRequest) (*UserResponse, error)
-	LogIn(context.Context, *LogInRequest) (*LogInResponse, error)
-	LogOut(context.Context, *LogOutRequest) (*LogOutResponse, error)
-	GetUserInfo(context.Context, *GetUserInfoRequest) (*UserResponse, error)
+	Signup(context.Context, *SignupReq) (*UserResp, error)
+	Login(context.Context, *LoginReq) (*LoginResp, error)
+	GetUserInfo(context.Context, *GetUserInfoReq) (*UserResp, error)
+	GetSelfInfo(context.Context, *GetSelfInfoReq) (*UserResp, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -94,17 +94,17 @@ type UserServiceServer interface {
 type UnimplementedUserServiceServer struct {
 }
 
-func (UnimplementedUserServiceServer) RegisterUser(context.Context, *RegisterUserRequest) (*UserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
+func (UnimplementedUserServiceServer) Signup(context.Context, *SignupReq) (*UserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Signup not implemented")
 }
-func (UnimplementedUserServiceServer) LogIn(context.Context, *LogInRequest) (*LogInResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LogIn not implemented")
+func (UnimplementedUserServiceServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
 }
-func (UnimplementedUserServiceServer) LogOut(context.Context, *LogOutRequest) (*LogOutResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LogOut not implemented")
-}
-func (UnimplementedUserServiceServer) GetUserInfo(context.Context, *GetUserInfoRequest) (*UserResponse, error) {
+func (UnimplementedUserServiceServer) GetUserInfo(context.Context, *GetUserInfoReq) (*UserResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
+}
+func (UnimplementedUserServiceServer) GetSelfInfo(context.Context, *GetSelfInfoReq) (*UserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSelfInfo not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -119,62 +119,44 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 	s.RegisterService(&UserService_ServiceDesc, srv)
 }
 
-func _UserService_RegisterUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterUserRequest)
+func _UserService_Signup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignupReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).RegisterUser(ctx, in)
+		return srv.(UserServiceServer).Signup(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserService_RegisterUser_FullMethodName,
+		FullMethod: UserService_Signup_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).RegisterUser(ctx, req.(*RegisterUserRequest))
+		return srv.(UserServiceServer).Signup(ctx, req.(*SignupReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_LogIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogInRequest)
+func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceServer).LogIn(ctx, in)
+		return srv.(UserServiceServer).Login(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserService_LogIn_FullMethodName,
+		FullMethod: UserService_Login_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).LogIn(ctx, req.(*LogInRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _UserService_LogOut_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LogOutRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServiceServer).LogOut(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: UserService_LogOut_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).LogOut(ctx, req.(*LogOutRequest))
+		return srv.(UserServiceServer).Login(ctx, req.(*LoginReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserInfoRequest)
+	in := new(GetUserInfoReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -186,7 +168,25 @@ func _UserService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: UserService_GetUserInfo_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceServer).GetUserInfo(ctx, req.(*GetUserInfoRequest))
+		return srv.(UserServiceServer).GetUserInfo(ctx, req.(*GetUserInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetSelfInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSelfInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetSelfInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetSelfInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetSelfInfo(ctx, req.(*GetSelfInfoReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -199,20 +199,20 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RegisterUser",
-			Handler:    _UserService_RegisterUser_Handler,
+			MethodName: "Signup",
+			Handler:    _UserService_Signup_Handler,
 		},
 		{
-			MethodName: "LogIn",
-			Handler:    _UserService_LogIn_Handler,
-		},
-		{
-			MethodName: "LogOut",
-			Handler:    _UserService_LogOut_Handler,
+			MethodName: "Login",
+			Handler:    _UserService_Login_Handler,
 		},
 		{
 			MethodName: "GetUserInfo",
 			Handler:    _UserService_GetUserInfo_Handler,
+		},
+		{
+			MethodName: "GetSelfInfo",
+			Handler:    _UserService_GetSelfInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
