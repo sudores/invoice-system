@@ -19,10 +19,11 @@ type HttpServer struct {
 
 func NewHttpServer(registry []GrpcService, log *zerolog.Logger, config Config) *HttpServer {
 	mux := runtime.NewServeMux()
+	handler := corsMiddleware(mux)
 	return &HttpServer{
 		server: &http.Server{
 			Addr:    config.HttpAddr,
-			Handler: mux,
+			Handler: handler,
 		}, // TODO: May be add timeouts some time
 		mux:      mux,
 		log:      log.With().Str("component", "http_server").Logger(),
@@ -41,4 +42,21 @@ func (hs *HttpServer) ListenAndServe(ctx context.Context) error {
 		return err
 	}
 	return hs.server.Shutdown(ctx)
+}
+
+func corsMiddleware(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Max-Age", "3600")
+
+		if r.Method == http.MethodOptions {
+			// Preflight request; respond immediately
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
 }

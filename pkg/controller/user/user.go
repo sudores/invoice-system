@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct {
+type UserDto struct {
 	Id           uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
 	Email        string    `gorm:"not null;unique"`
 	PasswordHash string    `gorm:"not null"`
@@ -22,7 +22,7 @@ type GormUserRepo struct {
 	log zerolog.Logger
 }
 
-func NewUserGormRepo(db *gorm.DB, log *zerolog.Logger) (*GormUserRepo, error) {
+func NewUserManager(db *gorm.DB, log *zerolog.Logger) (*GormUserRepo, error) {
 	db.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
 	err := db.AutoMigrate(
 		&User{},

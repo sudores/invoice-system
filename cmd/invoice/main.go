@@ -41,7 +41,7 @@ func main() {
 	log.Info().Msg("Invoice manager created!")
 
 	//=========== User Setup ===========//
-	usrMan, err := userRepo.NewUserManager(db, &log)
+	usrMan, err := userRepo.NewUserGormRepo(db, &log)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to setup user manager")
 	}
