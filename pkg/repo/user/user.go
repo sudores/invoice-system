@@ -11,7 +11,7 @@ import (
 
 type User struct {
 	Id           uuid.UUID `gorm:"type:uuid;primaryKey;default:uuid_generate_v4()"`
-	Email        string    `gorm:"not null"`
+	Email        string    `gorm:"not null;unique"`
 	PasswordHash string    `gorm:"not null"`
 	CreatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `gorm:"softDelete:milli"`

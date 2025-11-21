@@ -10,6 +10,7 @@ import (
 	"github.com/sudores/invoice-system/pkg/api/auth"
 	userRepo "github.com/sudores/invoice-system/pkg/repo/user"
 	"golang.org/x/crypto/bcrypt"
+	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 )
@@ -20,6 +21,10 @@ type UsersGrpcService struct {
 	repo UserRepo
 	// TODO: Switch to unified auth way through the dependency inversion
 	jwm *auth.JwtManager
+}
+
+func (ugs UsersGrpcService) Descriptor() *grpc.ServiceDesc {
+	return &UserService_ServiceDesc
 }
 
 type UserRepo interface {

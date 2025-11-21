@@ -1,6 +1,6 @@
 #!/bin/sh
 grpcurl -plaintext \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM2ODE2ODcsImlhdCI6MTc2MzY3ODA4Nywic3ViIjoiY2QxOGZkNzEtNGFkYy00OWYzLTkzMWQtMWE5NTA2N2JjMWZlIn0.uHdkbs0nkHd5N4UeICg8gwnFKtJJMaX_CO4QxHfPRpQ" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM3MjYxNzYsImlhdCI6MTc2MzcyMjU3Niwic3ViIjoiYWZlYjUzMTAtMmIyMy00MDRlLWIzMzQtZjZkYTVhZTc1ZmZiIn0.oJvfZLEZPGjNuqJvlo9yWy0cWpJ34LE1jXUeDXYMGTo" \
   -proto ./pkg/api/invoice/invoice.proto \
   -d '{
         "sender_id": "5e441075-6119-4286-9dfe-2785b524e1bc",

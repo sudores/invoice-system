@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"net"
 	"os"
 
 	"github.com/rs/zerolog"
+	"github.com/sudores/invoice-system/pkg/api"
 	"github.com/sudores/invoice-system/pkg/api/auth"
 	"github.com/sudores/invoice-system/pkg/api/invoice"
 	"github.com/sudores/invoice-system/pkg/api/user"
@@ -50,28 +49,12 @@ func main() {
 	//=========== Jwt Setup ===========//
 	jwtManager := auth.NewJwtManager(conf.Jwt)
 
-	//=========== GRPC Setup ===========//
-	lis, err := net.Listen("tcp", ":50051") // choose any free port
-	if err != nil {
-		log.Fatal().Err(err).Msg("failed to listen")
-	}
-	log.Info().Msg("Listening on port!")
+	grpcServices := []api.GrpcService{invoice.NewInvoicesGrpcService(&log, invMan), user.NewUsersGrpcService(&log, usrMan, jwtManager)}
 
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(jwtManager.UnaryInterceptor()),
-	)
-
-	//=========== GRPC Service Setup ===========//
-	invSvc := invoice.NewInvoicesGrpcService(&log, invMan)
-	invoice.RegisterInvoiceServiceServer(grpcServer, &invSvc)
-
-	usrSvc := user.NewUsersGrpcService(&log, usrMan, jwtManager)
-	user.RegisterUserServiceServer(grpcServer, usrSvc)
+	srv := api.NewGrpcServer(grpcServices, &log, conf.Api, grpc.UnaryInterceptor(jwtManager.UnaryInterceptor()))
 
 	log.Info().Msg("gRPC server listening on :50051")
-	fmt.Println(grpcServer.GetServiceInfo())
-
-	if err := grpcServer.Serve(lis); err != nil {
+	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve")
 	}
 }
