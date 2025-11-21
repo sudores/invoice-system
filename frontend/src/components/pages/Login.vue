@@ -14,11 +14,11 @@ const user = useUserStore()
 async function login() {
   error.value = ''
   try {
-    const res = await api.post('/auth/login', {
+    const res = await api.post('/api/v1/login', {
       email: email.value,
       password: password.value,
     })
-    const token = res.data.token
+    const token = res.data.jwt
     if (!token) {
       error.value = 'Invalid response from server'
       return
