@@ -47,7 +47,7 @@
       }
     },
     "/api/v1/login": {
-      "get": {
+      "post": {
         "operationId": "UserService_Login",
         "responses": {
           "200": {
@@ -65,16 +65,12 @@
         },
         "parameters": [
           {
-            "name": "email",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userLoginReq"
+            }
           }
         ],
         "tags": [
@@ -105,7 +101,7 @@
       }
     },
     "/api/v1/signup": {
-      "get": {
+      "post": {
         "operationId": "UserService_Signup",
         "responses": {
           "200": {
@@ -123,16 +119,12 @@
         },
         "parameters": [
           {
-            "name": "email",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "password",
-            "in": "query",
-            "required": false,
-            "type": "string"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/userSignupReq"
+            }
           }
         ],
         "tags": [
@@ -170,6 +162,17 @@
         }
       }
     },
+    "userLoginReq": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
     "userLoginResp": {
       "type": "object",
       "properties": {
@@ -180,6 +183,17 @@
           "type": "string"
         },
         "message": {
+          "type": "string"
+        }
+      }
+    },
+    "userSignupReq": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
           "type": "string"
         }
       }

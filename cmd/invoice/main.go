@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -49,11 +50,21 @@ func main() {
 	//=========== Jwt Setup ===========//
 	jwtManager := auth.NewJwtManager(conf.Jwt)
 
-	grpcServices := []api.GrpcService{invoice.NewInvoicesGrpcService(&log, invMan), user.NewUsersGrpcService(&log, usrMan, jwtManager)}
+	svc := []api.GrpcService{invoice.NewInvoicesGrpcService(&log, invMan), user.NewUsersGrpcService(&log, usrMan, jwtManager)}
 
-	srv := api.NewGrpcServer(grpcServices, &log, conf.Api, grpc.UnaryInterceptor(jwtManager.UnaryInterceptor()))
+	srv := api.NewGrpcServer(svc, &log, conf.Api, grpc.UnaryInterceptor(jwtManager.UnaryInterceptor()))
 
-	if err := srv.ListenAndServe(); err != nil {
-		log.Fatal().Err(err).Msg("failed to serve")
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal().Err(err).Msg("failed to serve")
+		}
+	}()
+
+	httpSrv := api.NewHttpServer(svc, &log, conf.Api)
+
+	ctx := context.TODO()
+	if err := httpSrv.ListenAndServe(ctx); err != nil {
+		log.Fatal().Err(err).Msg("Error while listening http")
 	}
+
 }

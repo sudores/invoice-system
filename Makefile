@@ -15,9 +15,9 @@ $(INVOICES_API_PROTO_OUT): $(INVOICES_API_PROTO_SOURCE)
         --go_opt=paths=source_relative \
         --go-grpc_out=$(INVOICES_API_DIR) \
         --go-grpc_opt=paths=source_relative \
-        --grpc-gateway_out=$(INVOICES_API_DIR) \
+		--grpc-gateway_out=allow_delete_body=true:$(INVOICES_API_DIR) \
         --grpc-gateway_opt paths=source_relative \
-        --openapiv2_out $(INVOICES_API_DIR) \
+        --openapiv2_out=allow_delete_body=true:$(INVOICES_API_DIR) \
         --openapiv2_opt logtostderr=true \
         $(INVOICES_API_PROTO_SOURCE)
 
@@ -27,9 +27,9 @@ $(USER_API_PROTO_OUT): $(USER_API_PROTO_SOURCE)
         --go_opt=paths=source_relative \
         --go-grpc_out=$(USER_API_DIR) \
         --go-grpc_opt=paths=source_relative \
-        --grpc-gateway_out=$(USER_API_DIR) \
+        --grpc-gateway_out=allow_delete_body=true:$(USER_API_DIR) \
         --grpc-gateway_opt paths=source_relative \
-        --openapiv2_out $(USER_API_DIR) \
+        --openapiv2_out=allow_delete_body=true:$(USER_API_DIR) \
         --openapiv2_opt logtostderr=true \
         $(USER_API_PROTO_SOURCE)
 

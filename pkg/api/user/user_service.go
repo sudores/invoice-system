@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog"
 	"github.com/sudores/invoice-system/pkg/api/auth"
 	userRepo "github.com/sudores/invoice-system/pkg/repo/user"
@@ -27,6 +28,10 @@ func (ugs UsersGrpcService) Descriptor() *grpc.ServiceDesc {
 	return &UserService_ServiceDesc
 }
 
+func (ugs *UsersGrpcService) RegisterHttp(ctx context.Context, mux *runtime.ServeMux) error {
+	return RegisterUserServiceHandlerServer(ctx, mux, ugs)
+}
+
 type UserRepo interface {
 	CreateUser(ctx context.Context, u *userRepo.User) (*userRepo.User, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
@@ -35,8 +40,8 @@ type UserRepo interface {
 	GetUserById(ctx context.Context, id uuid.UUID) (*userRepo.User, error)
 }
 
-func NewUsersGrpcService(log *zerolog.Logger, repo UserRepo, jwm *auth.JwtManager) UsersGrpcService {
-	return UsersGrpcService{
+func NewUsersGrpcService(log *zerolog.Logger, repo UserRepo, jwm *auth.JwtManager) *UsersGrpcService {
+	return &UsersGrpcService{
 		log:  log,
 		repo: repo,
 		jwm:  jwm,

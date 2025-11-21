@@ -77,8 +77,8 @@ func (jw JwtManager) JwtOk(token string) (bool, error) {
 // UnaryInterceptor returns a gRPC unary interceptor method on JwtManager
 func (jw *JwtManager) UnaryInterceptor() grpc.UnaryServerInterceptor {
 	skipMethods := map[string]struct{}{
-		"/user.UserService/LogIn":        {},
-		"/user.UserService/RegisterUser": {},
+		"/user.UserService/Login":  {},
+		"/user.UserService/Signup": {},
 	}
 
 	return func(

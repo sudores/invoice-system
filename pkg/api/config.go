@@ -1,5 +1,6 @@
 package api
 
 type Config struct {
-	Addr string `env:"Addr" envDefault:":50051"`
+	GrpcAddr string `env:"GRPC_ADDR" envDefault:":50051"`
+	HttpAddr string `env:"HTTP_ADDR" envDefault:":8080"`
 }

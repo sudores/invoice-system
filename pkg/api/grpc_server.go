@@ -1,9 +1,11 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 )
@@ -16,6 +18,7 @@ type GrpcServer struct {
 
 type GrpcService interface {
 	Descriptor() *grpc.ServiceDesc
+	RegisterHttp(ctx context.Context, mux *runtime.ServeMux) error
 }
 
 func NewGrpcServer(registry []GrpcService, log *zerolog.Logger, config Config, opts grpc.ServerOption) *GrpcServer {
@@ -32,11 +35,11 @@ func NewGrpcServer(registry []GrpcService, log *zerolog.Logger, config Config, o
 }
 
 func (gr GrpcServer) ListenAndServe() error {
-	lis, err := net.Listen("tcp", gr.config.Addr)
+	lis, err := net.Listen("tcp", gr.config.GrpcAddr)
 	if err != nil {
 		gr.log.Error().Err(err).Msg("failed to listen")
 	}
-	gr.log.Info().Str("addr", gr.config.Addr).Msg("Listening on port!")
+	gr.log.Info().Str("addr", gr.config.GrpcAddr).Msg("Listening on port!")
 	gr.log.Debug().Str("services", fmt.Sprint(gr.server.GetServiceInfo())).Msg("Service info")
 
 	return gr.server.Serve(lis)

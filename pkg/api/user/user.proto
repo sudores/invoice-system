@@ -12,12 +12,14 @@ import "google/api/annotations.proto";
 service UserService {
   rpc Signup(SignupReq) returns (UserResp) {
     option (google.api.http) = {
-      get: "/api/v1/signup"
+      post: "/api/v1/signup"
+      body: "*"
     };
   }
   rpc Login(LoginReq) returns (LoginResp) {
     option (google.api.http) = {
-      get: "/api/v1/login"
+      post: "/api/v1/login"
+      body: "*"
     };
   }
   rpc GetUserInfo(GetUserInfoReq) returns (UserResp) {
