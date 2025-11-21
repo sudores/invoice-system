@@ -53,7 +53,6 @@ func main() {
 
 	srv := api.NewGrpcServer(grpcServices, &log, conf.Api, grpc.UnaryInterceptor(jwtManager.UnaryInterceptor()))
 
-	log.Info().Msg("gRPC server listening on :50051")
 	if err := srv.ListenAndServe(); err != nil {
 		log.Fatal().Err(err).Msg("failed to serve")
 	}
