@@ -1,13 +1,5 @@
 <template>
   <div class="layout">
-    <!-- Top Navbar -->
-    <header class="nav">
-      <div class="nav-title">Invoice Dashboard</div>
-      <div class="nav-right">
-        <button class="logout" @click="logout">Logout</button>
-      </div>
-    </header>
-
     <!-- Content -->
     <main class="content">
       <!-- Summary cards -->

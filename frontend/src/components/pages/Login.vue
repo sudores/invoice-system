@@ -32,13 +32,32 @@ async function login() {
 </script>
 
 <template>
-  <div class="login-container">
-    <div class="login-box">
-      <h2>Login</h2>
-      <input v-model="email" type="text" placeholder="Email" />
-      <input v-model="password" type="password" placeholder="Password" />
-      <button @click="login">Log In</button>
-      <p class="error" v-if="error">{{ error }}</p>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
+      <h2 class="text-2xl font-semibold text-center mb-6">Login</h2>
+      
+      <input
+        v-model="email"
+        type="text"
+        placeholder="Email"
+        class="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+
+      <input
+        v-model="password"
+        type="password"
+        placeholder="Password"
+        class="w-full mb-4 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+
+      <button
+        @click="login"
+        class="w-full py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600 transition-colors"
+      >
+        Log In
+      </button>
+
+      <p v-if="error" class="mt-4 text-red-500 text-sm text-center">{{ error }}</p>
     </div>
   </div>
 </template>
