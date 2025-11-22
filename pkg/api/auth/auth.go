@@ -154,9 +154,9 @@ func GetUUIDFromContext(ctx context.Context) (*uuid.UUID, error) {
 // GatewayMiddleware returns a grpc-gateway Middleware for HTTP requests
 func (jw *JwtManager) GatewayMiddleware() runtime.Middleware {
 	skipPaths := map[string]struct{}{
-		"/api/v1/login":   {},
-		"/api/v1/refresh": {},
-		"/api/v1/signup":  {},
+		"/api/v1/login":         {},
+		"/api/v1/login/refresh": {},
+		"/api/v1/signup":        {},
 	}
 
 	return func(next runtime.HandlerFunc) runtime.HandlerFunc {
