@@ -1,65 +1,79 @@
 <template>
-  <div class="layout">
-    <!-- Content -->
-    <main class="content">
-      <!-- Summary cards -->
-      <div class="cards">
-        <div class="card">
-          <div class="card-title">Total Unpaid</div>
-          <div class="card-value">{{ summary.unpaid }}</div>
+  <div class="flex flex-col h-screen bg-gray-100 font-sans">
+    <!-- Main content -->
+    <main class="flex-1 p-4 overflow-y-auto">
+      <!-- Summary Cards -->
+      <div class="flex flex-col sm:flex-row gap-3 mb-4">
+        <div class="flex-1 bg-white p-4 rounded-lg shadow">
+          <div class="text-gray-500 text-sm">Total Unpaid</div>
+          <div class="mt-2 text-xl font-semibold">{{ summary.unpaid }}</div>
         </div>
 
-        <div class="card">
-          <div class="card-title">Total Paid</div>
-          <div class="card-value">{{ summary.paid }}</div>
+        <div class="flex-1 bg-white p-4 rounded-lg shadow">
+          <div class="text-gray-500 text-sm">Total Paid</div>
+          <div class="mt-2 text-xl font-semibold">{{ summary.paid }}</div>
         </div>
 
-        <div class="card">
-          <div class="card-title">Due Soon</div>
-          <div class="card-value">{{ summary.dueSoon }}</div>
+        <div class="flex-1 bg-white p-4 rounded-lg shadow">
+          <div class="text-gray-500 text-sm">Due Soon</div>
+          <div class="mt-2 text-xl font-semibold">{{ summary.dueSoon }}</div>
         </div>
       </div>
 
       <!-- Invoices List -->
-      <div class="list-card">
-        <h3>Your Invoices</h3>
+      <div class="bg-white p-4 rounded-lg shadow mb-4">
+        <h3 class="text-lg font-semibold mb-2">Your Invoices</h3>
 
-        <div v-if="loading" class="loading">Loading…</div>
-        <div v-if="error" class="error">{{ error }}</div>
+        <div v-if="loading" class="text-gray-500">Loading…</div>
+        <div v-if="error" class="text-red-600 mb-3">{{ error }}</div>
 
-        <div v-for="inv in invoices" :key="inv.id" class="invoice-row">
-          <div class="left">
-            <div class="inv-title">{{ inv.title }}</div>
-            <div class="inv-meta">
+        <div
+          v-for="inv in invoices"
+          :key="inv.id"
+          class="flex justify-between py-3 border-b last:border-b-0"
+        >
+          <div>
+            <div class="font-semibold">{{ inv.title }}</div>
+            <div class="text-sm text-gray-600">
               {{ inv.amount }} — {{ inv.status.toUpperCase() }}
             </div>
           </div>
 
-          <div class="right">
+          <div class="flex gap-2">
             <button
               v-if="inv.status !== 'PAID'"
-              class="btn small"
               @click="markPaid(inv.id)"
-            >Mark Paid</button>
+              class="px-2 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
+            >
+              Mark Paid
+            </button>
 
             <button
-              class="btn small gray"
               @click="edit(inv.id)"
-            >Edit</button>
+              class="px-2 py-1 text-sm rounded bg-gray-300 text-gray-800 hover:bg-gray-400"
+            >
+              Edit
+            </button>
           </div>
         </div>
 
-        <div v-if="!loading && invoices.length === 0" class="empty">
+        <div v-if="!loading && invoices.length === 0" class="text-center py-5 text-gray-600">
           No invoices found.
         </div>
       </div>
 
-      <button class="btn primary full" @click="create">Create Invoice</button>
+      <button
+        @click="create"
+        class="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+      >
+        Create Invoice
+      </button>
     </main>
   </div>
 </template>
 
 <script>
+import api from '../../api/client'
 export default {
   data() {
     return {
@@ -82,7 +96,7 @@ export default {
     }
 
     try {
-      const resp = await fetch("/api/invoices", {
+      const resp = await api.get("/api/v1/invoice/list/sent", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -150,164 +164,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Global Layout */
-.layout {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: #f5f7fa;
-  font-family: system-ui, sans-serif;
-}
-
-/* Navigation */
-.nav {
-  height: 56px;
-  background: #2c3e50;
-  color: #fff;
-  padding: 0 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.nav-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.logout {
-  background: #e74c3c;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-}
-.logout:hover {
-  background: #c0392b;
-}
-
-/* Main content */
-.content {
-  padding: 0;
-  overflow-y: auto;
-}
-
-/* Summary Cards */
-.cards {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.card {
-  flex: 1;
-  background: white;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-}
-
-.card-title {
-  font-size: 0.85rem;
-  color: #8b8b8b;
-}
-
-.card-value {
-  margin-top: 8px;
-  font-size: 1.4rem;
-  font-weight: 600;
-}
-
-/* Invoices List */
-.list-card {
-  background: white;
-  padding: 18px;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-  margin-bottom: 18px;
-}
-
-.invoice-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.invoice-row:last-child {
-  border-bottom: none;
-}
-
-.inv-title {
-  font-weight: 600;
-}
-
-.inv-meta {
-  font-size: 0.85rem;
-  color: #777;
-}
-
-.empty {
-  text-align: center;
-  padding: 20px;
-  color: #777;
-}
-
-/* Buttons */
-.btn {
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.btn.primary {
-  background: #3498db;
-  color: white;
-}
-
-.btn.primary:hover {
-  background: #2980b9;
-}
-
-.btn.gray {
-  background: #bdc3c7;
-  color: #2c3e50;
-}
-
-.btn.gray:hover {
-  background: #a6acaf;
-}
-
-.btn.small {
-  padding: 6px 10px;
-  font-size: 0.8rem;
-}
-
-.btn.full {
-  width: 100%;
-  margin-top: 10px;
-}
-
-/* Loading & error */
-.loading {
-  color: #777;
-}
-
-.error {
-  color: #c0392b;
-  margin-bottom: 12px;
-}
-
-/* Mobile stacking */
-@media (max-width: 600px) {
-  .cards {
-    flex-direction: column;
-  }
-}
-</style>
-
