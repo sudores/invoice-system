@@ -11,12 +11,12 @@ grpcurl -plaintext \
         "items": [
           {
             "title": "Service A",
-            "amount": 2,
+            "amount": 3251.12,
             "reference_id": "46446244-7972-4d8e-ba05-e89c1a9140c3"
           },
           {
             "title": "Service B",
-            "amount": 1,
+            "amount": 3352.58,
             "reference_id": "c3725b86-bb7f-4f31-af80-3d2ad96754af"
           }
         ],
