@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col h-screen bg-gray-100 font-sans">
-    <!-- Main content -->
     <main class="flex-1 p-4 overflow-y-auto">
       <!-- Summary Cards -->
       <div class="flex flex-col sm:flex-row gap-3 mb-4">
@@ -33,15 +32,18 @@
           class="flex justify-between py-3 border-b last:border-b-0"
         >
           <div>
-            <div class="font-semibold">{{ inv.title }}</div>
+            <div class="font-semibold">Invoice #{{ inv.id.slice(0, 8) }}</div>
             <div class="text-sm text-gray-600">
-              {{ inv.amount }} — {{ inv.status.toUpperCase() }}
+              <div v-for="item in inv.items" :key="item.referenceId">
+                {{ item.title }} — {{ item.amount }}
+              </div>
+              Status: {{ inv.status.toUpperCase() }}
             </div>
           </div>
 
           <div class="flex gap-2">
             <button
-              v-if="inv.status !== 'PAID'"
+              v-if="inv.status.toLowerCase() !== 'paid'"
               @click="markPaid(inv.id)"
               class="px-2 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
             >
@@ -74,6 +76,7 @@
 
 <script>
 import api from '../../api/client'
+
 export default {
   data() {
     return {
@@ -99,10 +102,9 @@ export default {
       const resp = await api.get("/api/v1/invoice/list/sent", {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      if (!resp.ok) throw new Error(await resp.text());
-      this.invoices = await resp.json();
-
+      if (resp.status != 200) throw new Error(await resp.text);
+      const data = await resp.data;
+      this.invoices = data.invoices || [];
       this.computeSummary();
     } catch (err) {
       this.error = err.message;
@@ -116,15 +118,20 @@ export default {
       let unpaid = 0;
       let paid = 0;
       let dueSoon = 0;
-
+      let refused = 0;
+      let pending = 0;
       const now = Date.now();
       const soon = 1000 * 60 * 60 * 24 * 7; // 7 days
 
       for (const inv of this.invoices) {
-        if (inv.status === "PAID") paid += inv.amount;
-        else unpaid += inv.amount;
+        // sum all items
+        const totalAmount = inv.items.reduce((sum, i) => sum + i.amount, 0);
+        console.log(totalAmount)
 
-        if (inv.due_date && new Date(inv.due_date).getTime() - now < soon)
+        if (inv.status.toLowerCase() === "paid") paid += totalAmount;
+        else unpaid += totalAmount;
+
+        if (inv.dueDate && new Date(inv.dueDate).getTime() - now < soon)
           dueSoon++;
       }
 
@@ -143,7 +150,7 @@ export default {
       });
 
       this.invoices = this.invoices.map((i) =>
-        i.id === id ? { ...i, status: "PAID" } : i
+        i.id === id ? { ...i, status: "paid" } : i
       );
 
       this.computeSummary();
@@ -164,3 +171,4 @@ export default {
   },
 };
 </script>
+

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, defineProps } from 'vue'
+import { ref, defineProps, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 // Receive the prop from parent
@@ -33,6 +33,11 @@ function selectPage(page: { label: string; route: string }) {
     emit('toggle-sidebar')
   }
 }
+onMounted(() => {
+  if (window.innerWidth < 768 && props.isOpen) {
+    emit('toggle-sidebar')
+  }
+})
 </script>
 
 <template>
