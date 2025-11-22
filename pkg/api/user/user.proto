@@ -22,6 +22,12 @@ service UserService {
       body: "*"
     };
   }
+  rpc Refresh(RefreshReq) returns (RefreshResp) {
+    option (google.api.http) = {
+      post: "/api/v1/login/refresh"
+      body: "*"
+    };
+  }
   rpc GetUserInfo(GetUserInfoReq) returns (UserResp) {
     option (google.api.http) = {
       get: "/api/v1/getuser"
@@ -37,6 +43,14 @@ service UserService {
 message SignupReq {
   string email = 1;
   string password = 2;
+}
+
+message RefreshReq {
+  string refresh_token = 1;
+}
+
+message RefreshResp {
+  string jwt = 1;
 }
 
 message LoginReq {

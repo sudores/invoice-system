@@ -1,7 +1,7 @@
 #!/bin/sh
-TOKEN=`bash scripts/loginUser.sh`
+. ./scripts/loginUser.sh
 grpcurl -plaintext \
-  -H "Authorization: Bearer ${TOKEN}" \
+  -H "Authorization: Bearer ${JWT_TOKEN}" \
   -proto ./pkg/api/invoice/invoice.proto \
   -import-path ./proto/googleapis \
   -import-path ./pkg/api/invoice \

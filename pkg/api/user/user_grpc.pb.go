@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	UserService_Signup_FullMethodName      = "/user.UserService/Signup"
 	UserService_Login_FullMethodName       = "/user.UserService/Login"
+	UserService_Refresh_FullMethodName     = "/user.UserService/Refresh"
 	UserService_GetUserInfo_FullMethodName = "/user.UserService/GetUserInfo"
 	UserService_GetSelfInfo_FullMethodName = "/user.UserService/GetSelfInfo"
 )
@@ -31,6 +32,7 @@ const (
 type UserServiceClient interface {
 	Signup(ctx context.Context, in *SignupReq, opts ...grpc.CallOption) (*UserResp, error)
 	Login(ctx context.Context, in *LoginReq, opts ...grpc.CallOption) (*LoginResp, error)
+	Refresh(ctx context.Context, in *RefreshReq, opts ...grpc.CallOption) (*RefreshResp, error)
 	GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*UserResp, error)
 	GetSelfInfo(ctx context.Context, in *GetSelfInfoReq, opts ...grpc.CallOption) (*UserResp, error)
 }
@@ -61,6 +63,15 @@ func (c *userServiceClient) Login(ctx context.Context, in *LoginReq, opts ...grp
 	return out, nil
 }
 
+func (c *userServiceClient) Refresh(ctx context.Context, in *RefreshReq, opts ...grpc.CallOption) (*RefreshResp, error) {
+	out := new(RefreshResp)
+	err := c.cc.Invoke(ctx, UserService_Refresh_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoReq, opts ...grpc.CallOption) (*UserResp, error) {
 	out := new(UserResp)
 	err := c.cc.Invoke(ctx, UserService_GetUserInfo_FullMethodName, in, out, opts...)
@@ -85,6 +96,7 @@ func (c *userServiceClient) GetSelfInfo(ctx context.Context, in *GetSelfInfoReq,
 type UserServiceServer interface {
 	Signup(context.Context, *SignupReq) (*UserResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
+	Refresh(context.Context, *RefreshReq) (*RefreshResp, error)
 	GetUserInfo(context.Context, *GetUserInfoReq) (*UserResp, error)
 	GetSelfInfo(context.Context, *GetSelfInfoReq) (*UserResp, error)
 	mustEmbedUnimplementedUserServiceServer()
@@ -99,6 +111,9 @@ func (UnimplementedUserServiceServer) Signup(context.Context, *SignupReq) (*User
 }
 func (UnimplementedUserServiceServer) Login(context.Context, *LoginReq) (*LoginResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServiceServer) Refresh(context.Context, *RefreshReq) (*RefreshResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
 }
 func (UnimplementedUserServiceServer) GetUserInfo(context.Context, *GetUserInfoReq) (*UserResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
@@ -155,6 +170,24 @@ func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_Refresh_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Refresh(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_Refresh_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Refresh(ctx, req.(*RefreshReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserInfoReq)
 	if err := dec(in); err != nil {
@@ -205,6 +238,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _UserService_Login_Handler,
+		},
+		{
+			MethodName: "Refresh",
+			Handler:    _UserService_Refresh_Handler,
 		},
 		{
 			MethodName: "GetUserInfo",

@@ -1,5 +1,5 @@
 #!/bin/sh
-grpcurl -plaintext \
+data=$(grpcurl -plaintext \
   -proto user.proto \
   -import-path ./proto/googleapis \
   -import-path ./pkg/api/user \
@@ -8,4 +8,9 @@ grpcurl -plaintext \
         "password": "StrongPassword123!"
       }' \
   127.0.0.1:50051 \
-  user.UserService/Login | jq -r '.jwt'
+  user.UserService/Login)
+
+echo $data
+
+JWT_TOKEN=$(echo $data | jq -r '.jwt')
+REFRESH_TOKEN=$(echo $data | jq -r '.refreshToken')

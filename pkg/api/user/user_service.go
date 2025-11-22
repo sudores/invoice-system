@@ -59,11 +59,7 @@ func (ugs UsersGrpcService) Signup(ctx context.Context, req *SignupReq) (*UserRe
 		CreatedAt:    time.Now(),
 	})
 	if err != nil {
-		return &UserResp{
-			Id:      "",
-			Email:   req.Email,
-			Message: "Failed to register user " + err.Error(),
-		}, err
+		return nil, err
 	}
 	return &UserResp{
 		Id:      created.Id.String(),
@@ -76,33 +72,63 @@ func (ugs UsersGrpcService) Login(ctx context.Context, req *LoginReq) (*LoginRes
 	u, err := ugs.repo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		ugs.log.Trace().Str("user_email", req.Email).Msg("Login failed for user. No password found")
-		return &LoginResp{
-			Message: "Failed to get the user in database. Check you email",
-		}, errors.New("Failed to get get the user in database " + err.Error())
+		return nil, errors.New("Failed to get get the user in database " + err.Error())
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(req.Password))
 	if err != nil {
-		ugs.log.Trace().Str("user_email", req.Email).Msg("Login failed for user. Password mismatch")
-		return &LoginResp{
-			Message: "Password does not match for user. Please try again",
-		}, errors.New("Password does not match for user: " + err.Error())
+		ugs.log.Trace().Str("user_email", req.Email).
+			Msg("Login failed for user. Password mismatch")
+		return nil, errors.New("Password does not match for user: " + err.Error())
 	}
 
 	ugs.log.Trace().Str("user_email", req.Email).Msg("Login successful for user")
 
 	jwtToken, err := ugs.jwm.GenerateJwt(u.Id)
 	if err != nil {
-		ugs.log.Trace().Str("user_email", req.Email).Str("user_id", u.Id.String()).Msg("Login failed. Failed to generate JWT token")
-		return &LoginResp{
-			Message: "Failed to generate JWT token",
-		}, errors.New("Failed to generate JWT token: " + err.Error())
+		ugs.log.Trace().Str("user_email", req.Email).
+			Str("user_id", u.Id.String()).Msg("Login failed. Failed to generate JWT token")
+		return nil, errors.New("Failed to generate JWT token: " + err.Error())
+	}
+
+	refreshToken, err := ugs.jwm.GenerateRefresh(u.Id)
+	if err != nil {
+		ugs.log.Trace().Str("user_email", req.Email).
+			Str("user_id", u.Id.String()).Msg("Login failed. Failed to generate refresh token")
+		return nil, errors.New("Failed to generate refresh token: " + err.Error())
 	}
 
 	return &LoginResp{
 		Jwt:          jwtToken,
-		RefreshToken: "", // TODO: Implement
+		RefreshToken: refreshToken,
 		Message:      "Login successful. Good luck!",
+	}, nil
+}
+
+func (ugs UsersGrpcService) Refresh(ctx context.Context, req *RefreshReq) (*RefreshResp, error) {
+	claims, err := ugs.jwm.VerifyAndParse(req.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	strUid, ok := (*claims)["sub"].(string)
+	if !ok {
+		return nil, errors.New("Invalid JWT: sub claim missing or not a string")
+	}
+	uid, err := uuid.Parse(strUid)
+	if err != nil {
+		return nil, err
+	}
+	ugs.log.Trace().Str("user_id", uid.String()).Msg("Login successful for user")
+
+	jwtToken, err := ugs.jwm.GenerateJwt(uid)
+	if err != nil {
+		ugs.log.Trace().Str("user_id", uid.String()).
+			Msg("Refresh failed. Failed to generate JWT token")
+		return nil, errors.New("Failed to generate JWT token: " + err.Error())
+	}
+
+	return &RefreshResp{
+		Jwt: jwtToken,
 	}, nil
 }
 

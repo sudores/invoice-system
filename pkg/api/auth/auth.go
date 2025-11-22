@@ -20,27 +20,40 @@ import (
 const claimsKey = "jwt_claims"
 
 type JwtManager struct {
-	jwtSecret []byte
-	tokenTTL  time.Duration
+	jwtSecret       []byte
+	jwtTokenTTL     time.Duration
+	refreshTokenTTL time.Duration
 }
 
 func NewJwtManager(config Config) *JwtManager {
+	oneMonth := time.Hour * 24 * 30
 	return &JwtManager{
-		jwtSecret: []byte(config.JwtSecret),
-		tokenTTL:  config.JwtTokenTTL,
+		jwtSecret:       []byte(config.JwtSecret),
+		jwtTokenTTL:     config.JwtTokenTTL,
+		refreshTokenTTL: oneMonth,
 	}
 }
 
 // GenerateJwt creates a signed JWT string for a given user ID
-func (jw JwtManager) GenerateJwt(userID uuid.UUID) (string, error) {
+func (jw JwtManager) GenerateJwt(uid uuid.UUID) (string, error) {
+	return jw.generateJwtWithTTL(uid, jw.jwtTokenTTL)
+}
+
+// GenerateRefresh generates refresh token to get new JWT string for given user ID
+func (jw JwtManager) GenerateRefresh(uid uuid.UUID) (string, error) {
+	return jw.generateJwtWithTTL(uid, jw.refreshTokenTTL)
+}
+
+func (jw JwtManager) generateJwtWithTTL(uid uuid.UUID, ttl time.Duration) (string, error) {
 	claims := jwt.MapClaims{
-		"sub": userID.String(),
-		"exp": time.Now().Add(jw.tokenTTL).Unix(),
+		"sub": uid.String(),
+		"exp": time.Now().Add(ttl).Unix(),
 		"iat": time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jw.jwtSecret)
+
 }
 
 // VerifyAndParse extracts claims from a JWT string
@@ -71,8 +84,9 @@ func (jw *JwtManager) VerifyAndParse(tokenStr string) (*jwt.MapClaims, error) {
 // UnaryInterceptor for native gRPC requests
 func (jw *JwtManager) UnaryInterceptor() grpc.UnaryServerInterceptor {
 	skipMethods := map[string]struct{}{
-		"/user.UserService/Login":  {},
-		"/user.UserService/Signup": {},
+		"/user.UserService/Login":   {},
+		"/user.UserService/Signup":  {},
+		"/user.UserService/Refresh": {},
 	}
 
 	return func(
@@ -140,8 +154,9 @@ func GetUUIDFromContext(ctx context.Context) (*uuid.UUID, error) {
 // GatewayMiddleware returns a grpc-gateway Middleware for HTTP requests
 func (jw *JwtManager) GatewayMiddleware() runtime.Middleware {
 	skipPaths := map[string]struct{}{
-		"/api/v1/login":  {},
-		"/api/v1/signup": {},
+		"/api/v1/login":   {},
+		"/api/v1/refresh": {},
+		"/api/v1/signup":  {},
 	}
 
 	return func(next runtime.HandlerFunc) runtime.HandlerFunc {
