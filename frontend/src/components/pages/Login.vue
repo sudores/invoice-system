@@ -19,11 +19,13 @@ async function login() {
       password: password.value,
     })
     const token = res.data.jwt
+    const refreshToken = res.data.refreshToken
     if (!token) {
       error.value = 'Invalid response from server'
       return
     }
     user.setToken(token)
+    user.setToken(refreshToken)
     await router.push('/')
   } catch (e: any) {
     error.value = e.response?.data?.message || 'Login failed'

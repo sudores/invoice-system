@@ -107,6 +107,7 @@ export default {
       this.invoices = data.invoices || [];
       this.computeSummary();
     } catch (err) {
+      console.log("Test",resp);
       this.error = err.message;
     } finally {
       this.loading = false;
