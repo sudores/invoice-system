@@ -17,8 +17,8 @@ type HttpServer struct {
 	config   Config
 }
 
-func NewHttpServer(registry []GrpcService, log *zerolog.Logger, config Config) *HttpServer {
-	mux := runtime.NewServeMux()
+func NewHttpServer(registry []GrpcService, log *zerolog.Logger, config Config, opts ...runtime.ServeMuxOption) *HttpServer {
+	mux := runtime.NewServeMux(opts...)
 	handler := corsMiddleware(mux)
 	return &HttpServer{
 		server: &http.Server{

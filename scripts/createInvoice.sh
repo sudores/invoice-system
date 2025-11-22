@@ -1,7 +1,10 @@
 #!/bin/sh
+TOKEN=`bash scripts/loginUser.sh`
 grpcurl -plaintext \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjM3MjYxNzYsImlhdCI6MTc2MzcyMjU3Niwic3ViIjoiYWZlYjUzMTAtMmIyMy00MDRlLWIzMzQtZjZkYTVhZTc1ZmZiIn0.oJvfZLEZPGjNuqJvlo9yWy0cWpJ34LE1jXUeDXYMGTo" \
-  -proto ./pkg/api/invoice/invoice.proto \
+  -H "Authorization: Bearer ${TOKEN}" \
+  -proto invoice.proto \
+  -import-path ./proto/googleapis \
+  -import-path ./pkg/api/invoice \
   -d '{
         "sender_id": "5e441075-6119-4286-9dfe-2785b524e1bc",
         "recipient_id": "071b48d4-9115-401f-a3bd-4c0439d1900e",

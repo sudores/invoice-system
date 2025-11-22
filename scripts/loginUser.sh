@@ -8,4 +8,4 @@ grpcurl -plaintext \
         "password": "StrongPassword123!"
       }' \
   127.0.0.1:50051 \
-  user.UserService/Login
+  user.UserService/Login | jq -r '.jwt'

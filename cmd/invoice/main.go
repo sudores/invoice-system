@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog"
 	"github.com/sudores/invoice-system/pkg/api"
 	"github.com/sudores/invoice-system/pkg/api/auth"
@@ -34,7 +35,7 @@ func main() {
 	log.Info().Msg("DB connection ok!")
 
 	//=========== Invoice Setup ===========//
-	invMan, err := invoiceRepo.NewInvoiceManager(db, &log)
+	invMan, err := invoiceRepo.NewInvoiceGormRepo(db, &log)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to setup invoice manager")
 	}
@@ -60,7 +61,7 @@ func main() {
 		}
 	}()
 
-	httpSrv := api.NewHttpServer(svc, &log, conf.Api)
+	httpSrv := api.NewHttpServer(svc, &log, conf.Api, runtime.WithMiddlewares(jwtManager.GatewayMiddleware()))
 
 	ctx := context.TODO()
 	if err := httpSrv.ListenAndServe(ctx); err != nil {
