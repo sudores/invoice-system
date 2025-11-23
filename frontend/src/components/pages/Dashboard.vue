@@ -25,38 +25,42 @@
 
         <div v-if="loading" class="text-gray-500">Loading…</div>
         <div v-if="error" class="text-red-600 mb-3">{{ error }}</div>
-
-        <div
-          v-for="inv in invoices"
-          :key="inv.id"
-          class="flex justify-between py-3 border-b last:border-b-0"
-        >
-          <div>
-            <div class="font-semibold">Invoice #{{ inv.id.slice(0, 8) }}</div>
+        <div v-for="inv in invoices" :key="inv.id" class="flex py-1 border-b last:border-b-0">
+          <div class="w-full">
+            <div class="flex">
+                <div class="flex gap-2">
+                  <div class="font-semibold">Invoice #{{ inv.id.slice(0, 8) }} </div>
+                  <div class="px-1 py-0 text-sm rounded text-white" 
+                       :class="{
+                          'bg-green-600': inv.status.toLowerCase() === 'paid',
+                          'bg-red-700': inv.status.toLowerCase() === 'refused',
+                          'bg-blue-600': inv.status.toLowerCase() === 'pending',
+                          'bg-orange-500': inv.status.toLowerCase() === 'due'
+                        }">{{ inv.status.toUpperCase() }}</div>
+                </div>
+            </div>
             <div class="text-sm text-gray-600">
               <div v-for="item in inv.items" :key="item.referenceId">
-                {{ item.title }} — {{ item.amount }}
+                {{ item.title }} - {{ item.amount }}
               </div>
-              Status: {{ inv.status.toUpperCase() }}
             </div>
           </div>
+                <div class="flex flex-col gap-1 text-white ml-auto px-1 py-1 rounded">
+                  <button
+                    v-if="inv.status.toLowerCase() !== 'paid'"
+                    @click="markPaid(inv.id)"
+                    class="px-1 py-0 text-sm rounded bg-blue-600 text-white hover:bg-blue-600 "
+                  >
+                  Paid
+                  </button>
+                  <button
+                    @click="refuse(inv.id)"
+                    class="px-1 py-0 text-sm rounded bg-red-800 text-white hover:bg-gray-400 ml-auto"
+                  >
+                  Refuse
+                  </button>
+              </div>
 
-          <div class="flex gap-2">
-            <button
-              v-if="inv.status.toLowerCase() !== 'paid'"
-              @click="markPaid(inv.id)"
-              class="px-2 py-1 text-sm rounded bg-blue-500 text-white hover:bg-blue-600"
-            >
-              Mark Paid
-            </button>
-
-            <button
-              @click="edit(inv.id)"
-              class="px-2 py-1 text-sm rounded bg-gray-300 text-gray-800 hover:bg-gray-400"
-            >
-              Edit
-            </button>
-          </div>
         </div>
 
         <div v-if="!loading && invoices.length === 0" class="text-center py-5 text-gray-600">
@@ -107,7 +111,6 @@ export default {
       this.invoices = data.invoices || [];
       this.computeSummary();
     } catch (err) {
-      console.log("Test",resp);
       this.error = err.message;
     } finally {
       this.loading = false;
@@ -161,8 +164,8 @@ export default {
       this.$router.push("/create");
     },
 
-    edit(id) {
-      this.$router.push(`/edit/${id}`);
+    refuse(id) {
+      this.$router.push(`/refuse/${id}`);
     },
 
     logout() {

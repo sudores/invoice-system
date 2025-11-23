@@ -6,7 +6,7 @@
     <div>
         <p class="text-lg font-semibold"> Simple invoices </p>
     </div>
-    <div class="mlauto logout bg-red-500 text-white ml-auto px-1 py-1 rounded">
+    <div class="logout bg-red-500 text-white ml-auto px-1 py-1 rounded">
       <button class="" @click="logout">Logout</button>
     </div>
   </header>
