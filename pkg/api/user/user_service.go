@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rs/zerolog"
 	"github.com/sudores/invoice-system/pkg/api/auth"
 	userRepo "github.com/sudores/invoice-system/pkg/repo/user"
