@@ -40,7 +40,7 @@ codegen: $(USER_API_PROTO_OUT) $(INVOICES_API_PROTO_OUT) ## Generate GRPC stubs
 ## build:
 .PHONY: build
 build: codegen ## Build application and generate grpc stubs
-	go build -o invoice ./cmd/invoice
+	go build -o invoice-system.o ./cmd/invoice
 
 ## Help:
 .PHONY: help

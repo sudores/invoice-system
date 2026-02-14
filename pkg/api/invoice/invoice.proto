@@ -1,0 +1,161 @@
+syntax = "proto3";
+
+package invoice;
+
+option go_package = "github.com/sudores/invoice-system/pkg/api/invoice;invoice";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+// ========================
+// INVOICE SERVICE
+// ========================
+
+service InvoiceService {
+
+  rpc Create(CreateReq) returns (CreateResp) {
+    option (google.api.http) = {
+      post: "/api/v1/invoice"
+      body: "*"
+    };
+  }
+
+  rpc Update(UpdateReq) returns (UpdateResp) {
+    option (google.api.http) = {
+      patch: "/api/v1/invoice/{id}"
+      body: "*"
+    };
+  }
+
+  rpc Get(GetReq) returns (GetResp) {
+    option (google.api.http) = {
+      get: "/api/v1/invoice/{id}"
+    };
+  }
+
+  rpc List(ListReq) returns (ListResp) {
+    option (google.api.http) = {
+      get: "/api/v1/invoice"
+    };
+  }
+
+  rpc ChangeStatus(ChangeStatusReq) returns (ChangeStatusResp) {
+    option (google.api.http) = {
+      post: "/api/v1/invoice/{id}/status"
+      body: "*"
+    };
+  }
+
+  rpc Delete(DeleteReq) returns (DeleteResp) {
+    option (google.api.http) = {
+      delete: "/api/v1/invoice/{id}"
+    };
+  }
+}
+
+
+// ========================
+// ENUMS
+// ========================
+
+enum InvoiceStatus {
+  INVOICE_STATUS_PENDING = 0;
+  INVOICE_STATUS_PAID = 1;
+  INVOICE_STATUS_REFUSED = 2;
+  INVOICE_STATUS_CANCELED = 3;
+}
+
+// ========================
+// CORE MODELS
+// ========================
+
+message InvoiceItem {
+  string description = 1;
+  int64 amount = 2; // stored in smallest unit (e.g. cents)
+  repeated string tags = 3;
+}
+
+message Invoice {
+  string id = 1;
+
+  string from_user_id = 2;
+  string to_user_id = 3;
+
+  InvoiceStatus status = 4;
+
+  string description = 5;
+  repeated string tags = 6;
+
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  google.protobuf.Timestamp due_at = 9;
+  google.protobuf.Timestamp paid_at = 10;
+
+  repeated InvoiceItem items = 11;
+}
+
+// ========================
+// REQUEST / RESPONSE
+// ========================
+
+message CreateReq {
+  string from_user_id = 1;
+  string to_user_id = 2;
+  string description = 3;
+  repeated string tags = 4;
+  google.protobuf.Timestamp due_at = 5;
+  repeated InvoiceItem items = 6;
+}
+
+message CreateResp {
+  Invoice invoice = 1;
+}
+
+message UpdateReq {
+  string id = 1;
+  string description = 2;
+  repeated string tags = 3;
+  google.protobuf.Timestamp due_at = 4;
+  repeated InvoiceItem items = 5;
+}
+
+message UpdateResp {
+  Invoice invoice = 1;
+}
+
+message GetReq {
+  string id = 1;
+}
+
+message GetResp {
+  Invoice invoice = 1;
+}
+
+message ListReq {
+  InvoiceStatus status = 1;
+  string from_user_id = 2;
+  string to_user_id = 3;
+
+  int32 page = 4;
+  int32 page_size = 5;
+}
+
+message ListResp {
+  repeated Invoice invoices = 1;
+  int64 total = 2;
+}
+
+message ChangeStatusReq {
+  string id = 1;
+  InvoiceStatus status = 2;
+}
+
+message ChangeStatusResp {
+  Invoice invoice = 1;
+}
+
+message DeleteReq {
+  string id = 1;
+}
+
+message DeleteResp {}
