@@ -51,7 +51,7 @@ func main() {
 	//=========== Jwt Setup ===========//
 	jwtManager := auth.NewJwtManager(conf.Jwt)
 
-	svc := []api.GrpcService{invoice.NewInvoicesGrpcService(&log, invMan), user.NewUsersGrpcService(&log, usrMan, jwtManager)}
+	svc := []api.GrpcService{invoice.NewInvoiceGrpcService(&log, invMan, jwtManager), user.NewUsersGrpcService(&log, usrMan, jwtManager)}
 
 	srv := api.NewGrpcServer(svc, &log, conf.Api, grpc.UnaryInterceptor(jwtManager.UnaryInterceptor()))
 
