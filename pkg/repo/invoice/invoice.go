@@ -20,7 +20,7 @@ type Invoice struct {
 	FromUserId uuid.UUID
 	ToUserId   uuid.UUID
 
-	Status InvoiceStatus
+	Status uint8
 
 	Description string
 	Items       []*InvoiceItem
@@ -33,22 +33,6 @@ type InvoiceItem struct {
 	Description string
 	Amount      int64
 	// TODO: Added tags to here
-}
-
-type InvoiceStatus uint8
-
-const (
-	InvoiceStatus_PENDING InvoiceStatus = iota
-	InvoiceStatus_PAID
-	InvoiceStatus_REFUSED
-	InvoiceStatus_CANCELED
-)
-
-var InvoiceStatusNames = map[InvoiceStatus]string{
-	InvoiceStatus_PENDING:  "pending",
-	InvoiceStatus_PAID:     "paid",
-	InvoiceStatus_REFUSED:  "refused",
-	InvoiceStatus_CANCELED: "canceled",
 }
 
 type GormInvoiceRepo struct {
@@ -70,22 +54,35 @@ func NewInvoiceGormRepo(db *gorm.DB, log *zerolog.Logger) (*GormInvoiceRepo, err
 	}, nil
 }
 
-func (gir GormInvoiceRepo) Create(ctx context.Context, u *Invoice) (*Invoice, error) {
-	panic("not implemented") // TODO: Implement
+func (im GormInvoiceRepo) Create(ctx context.Context, u *Invoice) (*Invoice, error) {
+	im.log.Trace().Msg("Creating invoice")
+	tx := im.db.WithContext(ctx).Create(u)
+	return u, tx.Error
 }
 
-func (gir GormInvoiceRepo) Update(ctx context.Context, id uuid.UUID, u *Invoice) (*Invoice, error) {
-	panic("not implemented") // TODO: Implement
+func (im GormInvoiceRepo) Update(ctx context.Context, id uuid.UUID, u *Invoice) (*Invoice, error) {
+	im.log.Trace().Str("invoice_id", id.String()).Msg("Updating invoice")
+	tx := im.db.WithContext(ctx).Model(&Invoice{Id: id}).Updates(u)
+	return u, tx.Error
 }
 
-func (gir GormInvoiceRepo) Delete(ctx context.Context, id uuid.UUID) error {
-	panic("not implemented") // TODO: Implement
+func (im GormInvoiceRepo) Delete(ctx context.Context, id uuid.UUID) error {
+	im.log.Trace().Str("invoice_id", id.String()).Msg("Deleting invoice")
+	tx := im.db.WithContext(ctx).Delete(&Invoice{}, id)
+	return tx.Error
 }
 
-func (gir GormInvoiceRepo) Get(ctx context.Context, id uuid.UUID) (*Invoice, error) {
-	panic("not implemented") // TODO: Implement
+func (im GormInvoiceRepo) Get(ctx context.Context, id uuid.UUID) (*Invoice, error) {
+	im.log.Trace().Str("invoice_id", id.String()).Msg("Getting invoice")
+	u := &Invoice{}
+	tx := im.db.WithContext(ctx).First(&u, id)
+	return u, tx.Error
+
 }
 
-func (gir GormInvoiceRepo) GetByUser(ctx context.Context, uuid uuid.UUID) (*Invoice, error) {
-	panic("not implemented") // TODO: Implement
+func (im GormInvoiceRepo) GetFromUser(ctx context.Context, uuid uuid.UUID) (*Invoice, error) {
+	panic("Not implemented")
+}
+func (im GormInvoiceRepo) GetToUser(ctx context.Context, uuid uuid.UUID) (*Invoice, error) {
+	panic("Not implemented")
 }

@@ -59,10 +59,10 @@ service InvoiceService {
 // ========================
 
 enum InvoiceStatus {
-  INVOICE_STATUS_PENDING = 0;
-  INVOICE_STATUS_PAID = 1;
-  INVOICE_STATUS_REFUSED = 2;
-  INVOICE_STATUS_CANCELED = 3;
+  PENDING = 0;
+  PAID = 1;
+  REFUSED = 2;
+  CANCELED = 3;
 }
 
 // ========================

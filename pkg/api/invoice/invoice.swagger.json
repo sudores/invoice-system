@@ -40,12 +40,12 @@
             "required": false,
             "type": "string",
             "enum": [
-              "INVOICE_STATUS_PENDING",
-              "INVOICE_STATUS_PAID",
-              "INVOICE_STATUS_REFUSED",
-              "INVOICE_STATUS_CANCELED"
+              "PENDING",
+              "PAID",
+              "REFUSED",
+              "CANCELED"
             ],
-            "default": "INVOICE_STATUS_PENDING"
+            "default": "PENDING"
           },
           {
             "name": "fromUserId",
@@ -405,12 +405,12 @@
     "invoiceInvoiceStatus": {
       "type": "string",
       "enum": [
-        "INVOICE_STATUS_PENDING",
-        "INVOICE_STATUS_PAID",
-        "INVOICE_STATUS_REFUSED",
-        "INVOICE_STATUS_CANCELED"
+        "PENDING",
+        "PAID",
+        "REFUSED",
+        "CANCELED"
       ],
-      "default": "INVOICE_STATUS_PENDING"
+      "default": "PENDING"
     },
     "invoiceListResp": {
       "type": "object",

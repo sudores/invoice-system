@@ -26,25 +26,25 @@ const (
 type InvoiceStatus int32
 
 const (
-	InvoiceStatus_INVOICE_STATUS_PENDING  InvoiceStatus = 0
-	InvoiceStatus_INVOICE_STATUS_PAID     InvoiceStatus = 1
-	InvoiceStatus_INVOICE_STATUS_REFUSED  InvoiceStatus = 2
-	InvoiceStatus_INVOICE_STATUS_CANCELED InvoiceStatus = 3
+	InvoiceStatus_PENDING  InvoiceStatus = 0
+	InvoiceStatus_PAID     InvoiceStatus = 1
+	InvoiceStatus_REFUSED  InvoiceStatus = 2
+	InvoiceStatus_CANCELED InvoiceStatus = 3
 )
 
 // Enum value maps for InvoiceStatus.
 var (
 	InvoiceStatus_name = map[int32]string{
-		0: "INVOICE_STATUS_PENDING",
-		1: "INVOICE_STATUS_PAID",
-		2: "INVOICE_STATUS_REFUSED",
-		3: "INVOICE_STATUS_CANCELED",
+		0: "PENDING",
+		1: "PAID",
+		2: "REFUSED",
+		3: "CANCELED",
 	}
 	InvoiceStatus_value = map[string]int32{
-		"INVOICE_STATUS_PENDING":  0,
-		"INVOICE_STATUS_PAID":     1,
-		"INVOICE_STATUS_REFUSED":  2,
-		"INVOICE_STATUS_CANCELED": 3,
+		"PENDING":  0,
+		"PAID":     1,
+		"REFUSED":  2,
+		"CANCELED": 3,
 	}
 )
 
@@ -207,7 +207,7 @@ func (x *Invoice) GetStatus() InvoiceStatus {
 	if x != nil {
 		return x.Status
 	}
-	return InvoiceStatus_INVOICE_STATUS_PENDING
+	return InvoiceStatus_PENDING
 }
 
 func (x *Invoice) GetDescription() string {
@@ -640,7 +640,7 @@ func (x *ListReq) GetStatus() InvoiceStatus {
 	if x != nil {
 		return x.Status
 	}
-	return InvoiceStatus_INVOICE_STATUS_PENDING
+	return InvoiceStatus_PENDING
 }
 
 func (x *ListReq) GetFromUserId() string {
@@ -772,7 +772,7 @@ func (x *ChangeStatusReq) GetStatus() InvoiceStatus {
 	if x != nil {
 		return x.Status
 	}
-	return InvoiceStatus_INVOICE_STATUS_PENDING
+	return InvoiceStatus_PENDING
 }
 
 type ChangeStatusResp struct {
@@ -969,12 +969,12 @@ const file_invoice_proto_rawDesc = "" +
 	"\tDeleteReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\f\n" +
 	"\n" +
-	"DeleteResp*}\n" +
-	"\rInvoiceStatus\x12\x1a\n" +
-	"\x16INVOICE_STATUS_PENDING\x10\x00\x12\x17\n" +
-	"\x13INVOICE_STATUS_PAID\x10\x01\x12\x1a\n" +
-	"\x16INVOICE_STATUS_REFUSED\x10\x02\x12\x1b\n" +
-	"\x17INVOICE_STATUS_CANCELED\x10\x032\xff\x03\n" +
+	"DeleteResp*A\n" +
+	"\rInvoiceStatus\x12\v\n" +
+	"\aPENDING\x10\x00\x12\b\n" +
+	"\x04PAID\x10\x01\x12\v\n" +
+	"\aREFUSED\x10\x02\x12\f\n" +
+	"\bCANCELED\x10\x032\xff\x03\n" +
 	"\x0eInvoiceService\x12M\n" +
 	"\x06Create\x12\x12.invoice.CreateReq\x1a\x13.invoice.CreateResp\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/api/v1/invoice\x12R\n" +
 	"\x06Update\x12\x12.invoice.UpdateReq\x1a\x13.invoice.UpdateResp\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*2\x14/api/v1/invoice/{id}\x12F\n" +
